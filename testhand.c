@@ -4,9 +4,19 @@
  * of Bicycle cards */
 
 #include <stdio.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 #include "card.h"
 #include "deck.h"
 #include "hand.h"
+
+double get_time()
+{
+    struct timeval t;
+    struct timezone tz;
+    gettimeofday(&t, &tz);
+    return t.tv_sec + t.tv_usec*1e-6;
+}
 
 void print_hand(card_t hand[])
 {
@@ -85,6 +95,8 @@ void print_hand(card_t hand[])
 }
 
 int main() {
+    int i;
+    double start_time;
     card_t high_card[5];
     card_t one_pair[5];
     card_t two_pair[5];
@@ -179,6 +191,12 @@ int main() {
     print_hand(four_kind);
     print_hand(straight_flush);
     print_hand(royal_flush);
+
+    start_time = get_time();
+    for (i = 0; i < 5000000; i++) {
+        rank_hand(royal_flush);
+    }
+    printf("\nProcessed 5,000,000 Royal Flushes in %f\n", get_time() - start_time);
 
     return 0;
 }
