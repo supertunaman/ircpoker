@@ -7,6 +7,14 @@ int handcmp(card_t hand1[], card_t hand2[])
     int handvals1[5];
     int handvals2[5];
     int i;
+    int third_card1;
+    int third_card2;
+    int fourth_card1;
+    int fourth_card2;
+    int fifth_card1;
+    int fifth_card2;
+    int full_of1;
+    int full_of2;
     
     for (i = 0; i < 5; i++) {
         handvals1[i] = hand1[i].value;
@@ -41,6 +49,42 @@ int handcmp(card_t hand1[], card_t hand2[])
                 if (handvals1[i] != handvals2[i])
                     return (handvals1[i] > handvals2[i]);
             }
+            return 2;
+        case FOURKIND:
+            if (handvals1[2] != handvals2[2])
+                return (handvals1[2] > handvals2[2]);
+
+            if (handvals1[0] != handvals1[2])
+                fifth_card1 = handvals1[0];
+            else
+                fifth_card1 = handvals1[4];
+
+            if (handvals2[0] != handvals2[2])
+                fifth_card2 = handvals2[0];
+            else
+                fifth_card2 = handvals2[4];
+
+            if (fifth_card1 != fifth_card2)
+                return (fifth_card1 > fifth_card2);
+            
+            return 2;
+        case FULLHOUSE:
+            if (handvals1[2] != handvals2[2])
+                return (handvals1[2] > handvals2[2]);
+            
+            if (handvals1[1] != handvals1[2])
+                full_of1 = handvals1[1];
+            else
+                full_of1 = handvals1[3];
+            
+            if (handvals2[1] != handvals2[2])
+                full_of2 = handvals2[1];
+            else
+                full_of2 = handvals2[3];
+
+            if (full_of1 != full_of2)
+                return (full_of1 > full_of2);
+
             return 2;
         default:
             return 2;
