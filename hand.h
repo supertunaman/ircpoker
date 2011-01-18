@@ -25,6 +25,7 @@ typedef struct hand {
     int advantage;
 } hand_t;
 
+int handcmp(card_t hand1[], card_t hand2[]);
 void sort(int a[], int n);
 ranks_t rank_hand(card_t hand[]);
 

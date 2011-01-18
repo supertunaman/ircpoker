@@ -1,5 +1,52 @@
 #include "hand.h"
 
+int handcmp(card_t hand1[], card_t hand2[])
+{
+    ranks_t rank1 = rank_hand(hand1);
+    ranks_t rank2 = rank_hand(hand2);
+    int handvals1[5];
+    int handvals2[5];
+    int i;
+    
+    for (i = 0; i < 5; i++) {
+        handvals1[i] = hand1[i].value;
+        handvals2[i] = hand2[i].value;
+    }
+    sort(handvals1, 5);
+    sort(handvals2, 5);
+
+    if (rank1 != rank2)
+        return (rank1 > rank2);
+
+    switch (rank1)
+    {
+        case ROYALFLUSH:
+            return 2;
+        case STRAIGHT:
+        case STRAIGHTFLUSH:
+            if (handvals1[4] != handvals2[4])
+                return (handvals1[4] > handvals2[4]);
+            else
+                return 2;
+        case FLUSH:
+            for (i = 0; i < 5; i++) {
+                if (handvals1[i] == 1)
+                    handvals1[i] = 14;
+                if (handvals2[i] == 1)
+                    handvals2[i] = 14;
+            }
+            sort(handvals1, 5);
+            sort(handvals2, 5);
+            for (i = 4; i >= 0; i--) {
+                if (handvals1[i] != handvals2[i])
+                    return (handvals1[i] > handvals2[i]);
+            }
+            return 2;
+        default:
+            return 2;
+    }
+}
+
 void sort(int a[], int n)
 {
     int i, j, value;
@@ -72,3 +119,4 @@ ranks_t rank_hand(card_t hand[])
 
     return HIGHCARD;
 }
+
