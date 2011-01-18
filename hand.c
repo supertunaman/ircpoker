@@ -37,20 +37,18 @@ int handcmp(card_t hand1[], card_t hand2[])
             else
                 return 2;
         case FLUSH:
-            for (i = 0; i < 5; i++) {
-                if (handvals1[i] == 1)
-                    handvals1[i] = 14;
-                if (handvals2[i] == 1)
-                    handvals2[i] = 14;
-            }
-            sort(handvals1, 5);
-            sort(handvals2, 5);
+            promote_aces(handvals1);
+            promote_aces(handvals2);
+
             for (i = 4; i >= 0; i--) {
                 if (handvals1[i] != handvals2[i])
                     return (handvals1[i] > handvals2[i]);
             }
             return 2;
         case FOURKIND:
+            promote_aces(handvals1);
+            promote_aces(handvals2);
+
             if (handvals1[2] != handvals2[2])
                 return (handvals1[2] > handvals2[2]);
 
@@ -69,6 +67,9 @@ int handcmp(card_t hand1[], card_t hand2[])
             
             return 2;
         case FULLHOUSE:
+            promote_aces(handvals1);
+            promote_aces(handvals2);
+
             if (handvals1[2] != handvals2[2])
                 return (handvals1[2] > handvals2[2]);
             
@@ -86,9 +87,55 @@ int handcmp(card_t hand1[], card_t hand2[])
                 return (full_of1 > full_of2);
 
             return 2;
+        case THREEKIND:
+            promote_aces(handvals1);
+            promote_aces(handvals2);
+
+            if (handvals1[2] != handvals2[2])
+                return (handvals1[2] > handvals2[2]);
+            
+            if (handvals1[0] == handvals1[2]) {
+                fourth_card1 = handvals1[4];
+                fifth_card1 = handvals1[3];
+            } else {
+                fifth_card1 = handvals1[0];
+            }
+            if (handvals1[1] == handvals1[2])
+                fourth_card1 = handvals1[4];
+            else
+                fourth_card1 = handvals1[1];
+
+            if (handvals2[0] == handvals2[2]) {
+                fourth_card2 = handvals2[4];
+                fifth_card2 = handvals2[3];
+            } else {
+                fifth_card2 = handvals2[0];
+            }
+            if (handvals2[1] == handvals2[2])
+                fourth_card2 = handvals2[4];
+            else
+                fourth_card2 = handvals2[1];
+
+            if (fourth_card1 !=  fourth_card2)
+                return (fourth_card1 > fourth_card2);
+            if (fifth_card1 != fifth_card2)
+                return (fifth_card1 > fifth_card2);
+
+            return 2;
         default:
             return 2;
     }
+}
+
+void promote_aces(int handvals[])
+{
+    int i;
+    
+    for (i = 0; i < 5; i++) {
+        if (handvals[i] == 1)
+            handvals[i] = 14;
+    }
+    sort(handvals, 5);
 }
 
 void sort(int a[], int n)
