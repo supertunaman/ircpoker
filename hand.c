@@ -7,6 +7,11 @@ int handcmp(card_t hand1[], card_t hand2[])
     int handvals1[5];
     int handvals2[5];
     int i;
+    int j;
+    int first_pair1 = 0;
+    int first_pair2 = 0;
+    int second_pair1 = 0;
+    int second_pair2 = 0;
     int third_card1;
     int third_card2;
     int fourth_card1;
@@ -15,6 +20,12 @@ int handcmp(card_t hand1[], card_t hand2[])
     int fifth_card2;
     int full_of1;
     int full_of2;
+    int histogram1[15];
+    int histogram2[15];
+    int tmp;
+
+    for (i = 0; i < 15; i++) { histogram1[i] = 0; }
+    for (i = 0; i < 15; i++) { histogram2[i] = 0; }
     
     for (i = 0; i < 5; i++) {
         handvals1[i] = hand1[i].value;
@@ -37,6 +48,7 @@ int handcmp(card_t hand1[], card_t hand2[])
             else
                 return 2;
         case FLUSH:
+        case HIGHCARD:
             promote_aces(handvals1);
             promote_aces(handvals2);
 
@@ -122,6 +134,103 @@ int handcmp(card_t hand1[], card_t hand2[])
                 return (fifth_card1 > fifth_card2);
 
             return 2;
+        case TWOPAIR:
+            promote_aces(handvals1);
+            promote_aces(handvals2);
+
+            for (i = 0; i < 5; i++) {
+                histogram1[handvals1[i]]++;
+                histogram2[handvals2[i]]++;
+            }
+
+            for (i = 2; i < 15; i++) {
+                if (histogram1[i] == 1) 
+                    fifth_card1 = i;
+                if (histogram1[i] == 2) {
+                    if (first_pair1)
+                        second_pair1 = i;
+                    else
+                        first_pair1 = i;
+                }
+                
+                if (histogram2[i] == 1) 
+                    fifth_card2 = i;
+                if (histogram2[i] == 2) {
+                    if (first_pair2)
+                        second_pair2 = i;
+                    else
+                        first_pair2 = i;
+                }
+            }
+
+            if (first_pair1 < second_pair1) {
+                tmp = first_pair1;
+                first_pair1 = second_pair1;
+                second_pair1 = tmp;
+            }
+            if (first_pair2 < second_pair2) {
+                tmp = first_pair2;
+                first_pair2 = second_pair2;
+                second_pair2 = tmp;
+            }
+
+            if (first_pair1 != first_pair2)
+                return (first_pair1 > first_pair2);
+            if (second_pair1 != second_pair2)
+                return (second_pair1 > second_pair2);
+            if (fifth_card1 != fifth_card2)
+                return (fifth_card1 > fifth_card2);
+            
+            return 2;
+        case ONEPAIR:
+            promote_aces(handvals1);
+            promote_aces(handvals2);
+
+            for (i = 0; i < 5; i++) {
+                histogram1[handvals1[i]]++;
+                histogram2[handvals2[i]]++;
+            }
+
+            for (i = 2; i < 15; i++) {
+                if (histogram1[i] == 2) 
+                    first_pair1 = i;
+                if (histogram2[i] == 2)
+                    first_pair2 = i;
+                if (first_pair1 && first_pair2)
+                    break;
+            }
+            
+            if (first_pair1 != first_pair2)
+                return (first_pair1 > first_pair2);
+
+            for (i = 0; i < 5; i++) {
+                if (handvals1[i] != first_pair1) {
+                    if (!fifth_card1)
+                        fifth_card1 = handvals1[i];
+                    else if (!fourth_card1)
+                        fourth_card1 = handvals1[i];
+                    else
+                        third_card1 = handvals1[i];
+                }
+                if (handvals2[i] != first_pair2) {
+                    if (!fifth_card2)
+                        fifth_card2 = handvals2[i];
+                    else if (!fourth_card2)
+                        fourth_card2 = handvals2[i];
+                    else
+                        third_card2 = handvals2[i];
+                }
+            }
+
+            if (third_card1 != third_card2)
+                return (third_card1 > third_card2);
+            if (fourth_card1 != fourth_card2)
+                return (fourth_card1 > fourth_card2);
+            if (fifth_card1 != fifth_card2)
+                return (fifth_card1 > fifth_card2);
+
+            return 2;
+
         default:
             return 2;
     }
