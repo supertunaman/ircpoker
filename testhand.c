@@ -411,6 +411,12 @@ int main() {
     }
     printf("\nProcessed 5,000,000 Royal Flushes in %f\n", get_time() - start_time);
 
+    start_time = get_time();
+    for (i = 0; i < 5000000; i++) {
+        handcmp(one_pair1, one_pair2);
+    }
+    printf("Compared 5,000,000 sets of One Pair in %f\n", get_time() - start_time);
+
     return 0;
 }
 
