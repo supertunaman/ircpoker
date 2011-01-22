@@ -78,9 +78,9 @@ int handcmp(card_t hand1[], card_t hand2[])
             /* if the four of a kind is all in the community, test fifth card */
             /* the fifth card will either be [0] or [4] after sorting */
             if (handvals1[0] != handvals1[2])
-                fifth_card1 = handvals[0];
+                fifth_card1 = handvals1[0];
             else
-                fifth_card1 = handvals[4];
+                fifth_card1 = handvals1[4];
 
             if (handvals2[0] != handvals2[2])
                 fifth_card2 = handvals2[0];
