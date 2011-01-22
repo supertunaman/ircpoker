@@ -7,7 +7,6 @@ int handcmp(card_t hand1[], card_t hand2[])
     int handvals1[5];
     int handvals2[5];
     int i;
-    int j;
     int first_pair1 = 0;
     int first_pair2 = 0;
     int second_pair1 = 0;
@@ -24,9 +23,11 @@ int handcmp(card_t hand1[], card_t hand2[])
     int histogram2[15];
     int tmp;
 
+    /* set all histogram values to 0 */
     for (i = 0; i < 15; i++) { histogram1[i] = 0; }
     for (i = 0; i < 15; i++) { histogram2[i] = 0; }
     
+    /* put values of cards into handvals arrays and sort */
     for (i = 0; i < 5; i++) {
         handvals1[i] = hand1[i].value;
         handvals2[i] = hand2[i].value;
@@ -34,57 +35,58 @@ int handcmp(card_t hand1[], card_t hand2[])
     sort(handvals1, 5);
     sort(handvals2, 5);
 
+    /* return result if ranks differ */
     if (rank1 != rank2)
         return (rank1 > rank2);
 
+    /* Ranks are the same, so now we get to work */
     switch (rank1)
     {
         case ROYALFLUSH:
-            return 2;
+            return 2;   /* A royal flush is a royal flush */
+
+        /* same process for straight and straight flush */
         case STRAIGHT:
         case STRAIGHTFLUSH:
+            /* compare the last (highest) element of each array */
             if (handvals1[4] != handvals2[4])
                 return (handvals1[4] > handvals2[4]);
             else
                 return 2;
+
+        /* test which hand has the higher card(s) */
         case FLUSH:
         case HIGHCARD:
-            promote_aces(handvals1);
+            promote_aces(handvals1);    /* turn all values of 1 to 14 */
             promote_aces(handvals2);
 
+            /* loop down both lists and try to find a higher card */
             for (i = 4; i >= 0; i--) {
                 if (handvals1[i] != handvals2[i])
                     return (handvals1[i] > handvals2[i]);
             }
             return 2;
+
         case FOURKIND:
             promote_aces(handvals1);
             promote_aces(handvals2);
 
+            /* No point in bothering with the fifth card */
+            /* just find out which majority is greater */
             if (handvals1[2] != handvals2[2])
                 return (handvals1[2] > handvals2[2]);
-
-            if (handvals1[0] != handvals1[2])
-                fifth_card1 = handvals1[0];
-            else
-                fifth_card1 = handvals1[4];
-
-            if (handvals2[0] != handvals2[2])
-                fifth_card2 = handvals2[0];
-            else
-                fifth_card2 = handvals2[4];
-
-            if (fifth_card1 != fifth_card2)
-                return (fifth_card1 > fifth_card2);
             
-            return 2;
+            return 2; /* This shouldn't happen, ever */
+
         case FULLHOUSE:
             promote_aces(handvals1);
             promote_aces(handvals2);
 
+            /* compare the three of a kind */
             if (handvals1[2] != handvals2[2])
                 return (handvals1[2] > handvals2[2]);
             
+            /* find out where the "full of" pair is */
             if (handvals1[1] != handvals1[2])
                 full_of1 = handvals1[1];
             else
@@ -95,17 +97,21 @@ int handcmp(card_t hand1[], card_t hand2[])
             else
                 full_of2 = handvals2[3];
 
+            /* compare the "full of" cards */
             if (full_of1 != full_of2)
                 return (full_of1 > full_of2);
 
             return 2;
+
         case THREEKIND:
             promote_aces(handvals1);
             promote_aces(handvals2);
 
+            /* compare the three of a kind */
             if (handvals1[2] != handvals2[2])
                 return (handvals1[2] > handvals2[2]);
             
+            /* find the fourth and fifth cards and compare them */
             if (handvals1[0] == handvals1[2]) {
                 fourth_card1 = handvals1[4];
                 fifth_card1 = handvals1[3];
@@ -134,15 +140,18 @@ int handcmp(card_t hand1[], card_t hand2[])
                 return (fifth_card1 > fifth_card2);
 
             return 2;
+
         case TWOPAIR:
             promote_aces(handvals1);
             promote_aces(handvals2);
 
+            /* put values into the histograms */
             for (i = 0; i < 5; i++) {
                 histogram1[handvals1[i]]++;
                 histogram2[handvals2[i]]++;
             }
 
+            /* go through both histograms and figure out the pairs and fifth card */
             for (i = 2; i < 15; i++) {
                 if (histogram1[i] == 1) 
                     fifth_card1 = i;
@@ -163,6 +172,7 @@ int handcmp(card_t hand1[], card_t hand2[])
                 }
             }
 
+            /* make sure the first pair is higher than the second pair */
             if (first_pair1 < second_pair1) {
                 tmp = first_pair1;
                 first_pair1 = second_pair1;
@@ -174,6 +184,7 @@ int handcmp(card_t hand1[], card_t hand2[])
                 second_pair2 = tmp;
             }
 
+            /* finally compare the pairs and the fifth card */
             if (first_pair1 != first_pair2)
                 return (first_pair1 > first_pair2);
             if (second_pair1 != second_pair2)
@@ -182,6 +193,7 @@ int handcmp(card_t hand1[], card_t hand2[])
                 return (fifth_card1 > fifth_card2);
             
             return 2;
+
         case ONEPAIR:
             promote_aces(handvals1);
             promote_aces(handvals2);
@@ -191,6 +203,7 @@ int handcmp(card_t hand1[], card_t hand2[])
                 histogram2[handvals2[i]]++;
             }
 
+            /* find both pairs and then break */
             for (i = 2; i < 15; i++) {
                 if (histogram1[i] == 2) 
                     first_pair1 = i;
@@ -200,9 +213,11 @@ int handcmp(card_t hand1[], card_t hand2[])
                     break;
             }
             
+            /* compare the pairs */
             if (first_pair1 != first_pair2)
                 return (first_pair1 > first_pair2);
 
+            /* find third, fourth, and fifth cards */
             for (i = 0; i < 5; i++) {
                 if (handvals1[i] != first_pair1) {
                     if (!fifth_card1)
@@ -222,6 +237,7 @@ int handcmp(card_t hand1[], card_t hand2[])
                 }
             }
 
+            /* compare third fourth and fifth cards */
             if (third_card1 != third_card2)
                 return (third_card1 > third_card2);
             if (fourth_card1 != fourth_card2)
@@ -231,7 +247,7 @@ int handcmp(card_t hand1[], card_t hand2[])
 
             return 2;
 
-        default:
+        default:    /* shouldn't happen */
             return 2;
     }
 }
