@@ -71,12 +71,26 @@ int handcmp(card_t hand1[], card_t hand2[])
             promote_aces(handvals1);
             promote_aces(handvals2);
 
-            /* No point in bothering with the fifth card */
-            /* just find out which majority is greater */
+            /* find out which majority is greater */
             if (handvals1[2] != handvals2[2])
                 return (handvals1[2] > handvals2[2]);
+
+            /* if the four of a kind is all in the community, test fifth card */
+            /* the fifth card will either be [0] or [4] after sorting */
+            if (handvals1[0] != handvals1[2])
+                fifth_card1 = handvals[0];
+            else
+                fifth_card1 = handvals[4];
+
+            if (handvals2[0] != handvals2[2])
+                fifth_card2 = handvals2[0];
+            else
+                fifth_card2 = handvals2[4];
+
+            if (fifth_card1 != fifth_card2)
+                return (fifth_card1 > fifth_card2);
             
-            return 2; /* This shouldn't happen, ever */
+            return 2;
 
         case FULLHOUSE:
             promote_aces(handvals1);
