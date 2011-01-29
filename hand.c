@@ -24,6 +24,24 @@ void get_best_player_hand(int player_id)
          }
     }
 
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 5; j++)
+            cur_hand[j] = community[j];
+        cur_hand[i] = players[player_id].hand[0];
+
+        if (handcmp(cur_hand, last_hand))
+            for (j = 0; j < 5; j++)
+                last_hand[k] = cur_hand[k];
+
+        for (j = 0; j < 5; j++)
+            cur_hand[j] = community[j];
+        cur_hand[i] = players[player_id].hand[1];
+
+        if (handcmp(cur_hand, last_hand))
+            for (j = 0; j < 5; j++)
+                last_hand[k] = cur_hand[k];
+    }
+
     for (i = 0; i < 5; i++)
         players[player_id].best_hand[i] = last_hand[i];
 }
