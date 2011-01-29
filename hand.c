@@ -8,9 +8,11 @@ void get_best_player_hand(int player_id)
     int j;
     int k;
 
+    /* compare to the community cards first */
     for (i = 0; i < 5; i++)
         last_hand[i] = community[i];
 
+    /* replace two of the community cards at a time with the pocket cards */
     for (i = 0; i < 5; i++) {
          for (j = 0; j < i; j++) {
              for (k = 0; k < 5; k++)
@@ -18,12 +20,14 @@ void get_best_player_hand(int player_id)
              cur_hand[i] = players[player_id].hand[0];
              cur_hand[j] = players[player_id].hand[1];
 
+             /* if cur_hand beats last_hand, set last_hand's values to cur_hand's */
              if (handcmp(cur_hand, last_hand))
                  for (k = 0; k < 5; k++)
                      last_hand[k] = cur_hand[k];
          }
     }
 
+    /* now replace one card at a time and compare */
     for (i = 0; i < 5; i++) {
         for (j = 0; j < 5; j++)
             cur_hand[j] = community[j];
@@ -31,7 +35,7 @@ void get_best_player_hand(int player_id)
 
         if (handcmp(cur_hand, last_hand))
             for (j = 0; j < 5; j++)
-                last_hand[k] = cur_hand[k];
+                last_hand[j] = cur_hand[j];
 
         for (j = 0; j < 5; j++)
             cur_hand[j] = community[j];
@@ -39,9 +43,10 @@ void get_best_player_hand(int player_id)
 
         if (handcmp(cur_hand, last_hand))
             for (j = 0; j < 5; j++)
-                last_hand[k] = cur_hand[k];
+                last_hand[j] = cur_hand[j];
     }
 
+    /* by now, last_hand should be the best possible hand */
     for (i = 0; i < 5; i++)
         players[player_id].best_hand[i] = last_hand[i];
 }
