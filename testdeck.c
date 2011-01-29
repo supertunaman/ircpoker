@@ -143,8 +143,6 @@ void print_hands()
                 puts("...High Card");
                 break;
         }
-        if (i != 9)
-            puts("---");
     }
 }
 
