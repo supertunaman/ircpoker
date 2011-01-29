@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 #include "deck.h"
 #include "game.h"
 #include "hand.h"
@@ -10,6 +12,14 @@ void deal_cards()
     {
         deal(&players[i], i);
     }
+}
+
+double get_time()
+{
+    struct timeval t;
+    struct timezone tz;
+    gettimeofday(&t, &tz);
+    return t.tv_sec + t.tv_usec*1e-6;
 }
 
 void print_community()
@@ -148,6 +158,8 @@ void print_hands()
 
 int main()
 {
+    double start_time[10];
+    int i, j;
     init_deck();
     print_deck();
     puts("*** AFTER SHUFFLING ***");
@@ -159,6 +171,14 @@ int main()
     puts("*** DEALING CARDS ***");
     deal_cards();
     print_hands();
+
+    puts("*** BENCHMARKING ***");
+    for (i = 0; i < 10; i++) {
+        start_time[i] = get_time();
+        for (j = 0; j < 100000; j++)
+            get_best_player_hand(i);
+        printf("Calculated best hand for Player %d 100,000 times in %f\n", i, get_time() - start_time[i]);
+    }
 
     return 0;
 }
