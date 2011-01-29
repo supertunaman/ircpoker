@@ -95,21 +95,56 @@ void print_hands()
         {
             switch (players[i].hand[c].suit) {
                 case CLUBS:
-                    printf("%d of Clubs ", players[i].hand[c].value);
+                    printf("%02d of Clubs ", players[i].hand[c].value);
                     break;
                 case DIAMONDS:
-                    printf("%d of Diamonds ", players[i].hand[c].value);
+                    printf("%02d of Diamonds ", players[i].hand[c].value);
                     break;
                 case HEARTS:
-                    printf("%d of Hearts ", players[i].hand[c].value);
+                    printf("%02d of Hearts ", players[i].hand[c].value);
                     break;
                 case SPADES:
-                    printf("%d of Spades ", players[i].hand[c].value);
+                    printf("%02d of Spades ", players[i].hand[c].value);
                     break;
             }
             if (c < 1) { printf("and "); }
         }
         printf("\n");
+        get_best_player_hand(i);
+        switch (rank_hand(players[i].best_hand)) {
+            case ROYALFLUSH:
+                puts("...Royal Flush");
+                break;
+            case STRAIGHTFLUSH:
+                puts("...Straight Flush");
+                break;
+            case FOURKIND:
+                puts("...Four of a Kind");
+                break;
+            case FULLHOUSE:
+                puts("...Full House");
+                break;
+            case FLUSH:
+                puts("...Flush");
+                break;
+            case STRAIGHT:
+                puts("...Straight");
+                break;
+            case THREEKIND:
+                puts("...Three of a Kind");
+                break;
+            case TWOPAIR:
+                puts("...Two Pair");
+                break;
+            case ONEPAIR:
+                puts("...One Pair");
+                break;
+            case HIGHCARD:
+                puts("...High Card");
+                break;
+        }
+        if (i != 9)
+            puts("---");
     }
 }
 
@@ -120,12 +155,12 @@ int main()
     puts("*** AFTER SHUFFLING ***");
     shuffle_deck();
     print_deck();
-    puts("*** DEALING CARDS ***");
-    deal_cards();
-    print_hands();
     puts("*** COMMUNITY CARDS ***");
     deal_community();
     print_community();
+    puts("*** DEALING CARDS ***");
+    deal_cards();
+    print_hands();
 
     return 0;
 }

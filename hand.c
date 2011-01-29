@@ -1,5 +1,33 @@
 #include "hand.h"
 
+void get_best_player_hand(int player_id)
+{
+    card_t last_hand[5];
+    card_t cur_hand[5];
+    int i;
+    int j;
+    int k;
+
+    for (i = 0; i < 5; i++)
+        last_hand[i] = community[i];
+
+    for (i = 0; i < 5; i++) {
+         for (j = 0; j < i; j++) {
+             for (k = 0; k < 5; k++)
+                 cur_hand[k] = community[k];
+             cur_hand[i] = players[player_id].hand[0];
+             cur_hand[j] = players[player_id].hand[1];
+
+             if (handcmp(cur_hand, last_hand))
+                 for (k = 0; k < 5; k++)
+                     last_hand[k] = cur_hand[k];
+         }
+    }
+
+    for (i = 0; i < 5; i++)
+        players[player_id].best_hand[i] = last_hand[i];
+}
+
 int handcmp(card_t hand1[], card_t hand2[])
 {
     ranks_t rank1 = rank_hand(hand1);
