@@ -87,23 +87,26 @@ int handcmp(card_t hand1[], card_t hand2[])
     sort(handvals2, 5);
 
     /* return result if ranks differ */
-    if (rank1 != rank2)
-        return (rank1 > rank2);
+    if (rank1 < rank2)
+        return -1;
+    if (rank1 > rank2)
+        return 1;
 
     /* Ranks are the same, so now we get to work */
     switch (rank1)
     {
         case ROYALFLUSH:
-            return 2;   /* A royal flush is a royal flush */
+            return 0;   /* A royal flush is a royal flush */
 
         /* same process for straight and straight flush */
         case STRAIGHT:
         case STRAIGHTFLUSH:
             /* compare the last (highest) element of each array */
-            if (handvals1[4] != handvals2[4])
-                return (handvals1[4] > handvals2[4]);
-            else
-                return 2;
+            if (handvals1[4] < handvals2[4])
+                return -1;
+            if (handvals1[4] > handvals2[4])
+                return 1;
+            return 0;
 
         /* test which hand has the higher card(s) */
         case FLUSH:
@@ -113,18 +116,22 @@ int handcmp(card_t hand1[], card_t hand2[])
 
             /* loop down both lists and try to find a higher card */
             for (i = 4; i >= 0; i--) {
-                if (handvals1[i] != handvals2[i])
-                    return (handvals1[i] > handvals2[i]);
+                if (handvals1[i] < handvals2[i])
+                    return -1;
+                if (handvals1[i] > handvals2[i])
+                    return 1;
             }
-            return 2;
+            return 0;
 
         case FOURKIND:
             promote_aces(handvals1);
             promote_aces(handvals2);
 
             /* find out which majority is greater */
-            if (handvals1[2] != handvals2[2])
-                return (handvals1[2] > handvals2[2]);
+            if (handvals1[2] < handvals2[2])
+                return -1;
+            if (handvals1[2] > handvals2[2])
+                return 1;
 
             /* if the four of a kind is all in the community, test fifth card */
             /* the fifth card will either be [0] or [4] after sorting */
@@ -138,18 +145,22 @@ int handcmp(card_t hand1[], card_t hand2[])
             else
                 fifth_card2 = handvals2[4];
 
-            if (fifth_card1 != fifth_card2)
-                return (fifth_card1 > fifth_card2);
+            if (fifth_card1 < fifth_card2)
+                return -1;
+            if (fifth_card1 > fifth_card2)
+                return 1;
             
-            return 2;
+            return 0;
 
         case FULLHOUSE:
             promote_aces(handvals1);
             promote_aces(handvals2);
 
             /* compare the three of a kind */
-            if (handvals1[2] != handvals2[2])
-                return (handvals1[2] > handvals2[2]);
+            if (handvals1[2] < handvals2[2])
+                return -1;
+            if (handvals1[2] > handvals2[2])
+                return 1;
             
             /* find out where the "full of" pair is */
             if (handvals1[1] != handvals1[2])
@@ -163,18 +174,22 @@ int handcmp(card_t hand1[], card_t hand2[])
                 full_of2 = handvals2[3];
 
             /* compare the "full of" cards */
-            if (full_of1 != full_of2)
-                return (full_of1 > full_of2);
+            if (full_of1 < full_of2)
+                return -1;
+            if (full_of1 > full_of2)
+                return 1;
 
-            return 2;
+            return 0;
 
         case THREEKIND:
             promote_aces(handvals1);
             promote_aces(handvals2);
 
             /* compare the three of a kind */
-            if (handvals1[2] != handvals2[2])
-                return (handvals1[2] > handvals2[2]);
+            if (handvals1[2] < handvals2[2])
+                return -1;
+            if (handvals1[2] > handvals2[2])
+                return 1;
             
             /* find the fourth and fifth cards and compare them */
             if (handvals1[0] == handvals1[2]) {
@@ -199,12 +214,17 @@ int handcmp(card_t hand1[], card_t hand2[])
             else
                 fourth_card2 = handvals2[1];
 
-            if (fourth_card1 !=  fourth_card2)
-                return (fourth_card1 > fourth_card2);
-            if (fifth_card1 != fifth_card2)
-                return (fifth_card1 > fifth_card2);
+            if (fourth_card1 < fourth_card2)
+                return -1;
+            if (fourth_card1 > fourth_card2)
+                return 1;
 
-            return 2;
+            if (fifth_card1 < fifth_card2)
+                return -1;
+            if (fifth_card1 > fifth_card2)
+                return 1;
+
+            return 0;
 
         case TWOPAIR:
             promote_aces(handvals1);
@@ -250,14 +270,22 @@ int handcmp(card_t hand1[], card_t hand2[])
             }
 
             /* finally compare the pairs and the fifth card */
-            if (first_pair1 != first_pair2)
-                return (first_pair1 > first_pair2);
-            if (second_pair1 != second_pair2)
-                return (second_pair1 > second_pair2);
-            if (fifth_card1 != fifth_card2)
-                return (fifth_card1 > fifth_card2);
+            if (first_pair1 < first_pair2)
+                return -1;
+            if (first_pair1 > first_pair2)
+                return 1;
+
+            if (second_pair1 < second_pair2)
+                return -1;
+            if (second_pair1 > second_pair2)
+                return 1;
+
+            if (fifth_card1 < fifth_card2)
+                return -1;
+            if (fifth_card1 > fifth_card2)
+                return 1;
             
-            return 2;
+            return 0;
 
         case ONEPAIR:
             promote_aces(handvals1);
@@ -303,17 +331,25 @@ int handcmp(card_t hand1[], card_t hand2[])
             }
 
             /* compare third fourth and fifth cards */
-            if (third_card1 != third_card2)
-                return (third_card1 > third_card2);
-            if (fourth_card1 != fourth_card2)
-                return (fourth_card1 > fourth_card2);
-            if (fifth_card1 != fifth_card2)
-                return (fifth_card1 > fifth_card2);
+            if (third_card1 < third_card2)
+                return -1;
+            if (third_card1 > third_card2)
+                return 1;
 
-            return 2;
+            if (fourth_card1 < fourth_card2)
+                return -1;
+            if (fourth_card1 > fourth_card2)
+                return 1;
+
+            if (fifth_card1 < fifth_card2)
+                return -1;
+            if (fifth_card1 > fifth_card2)
+                return 1;
+
+            return 0;
 
         default:    /* shouldn't happen */
-            return 2;
+            return 0;
     }
 }
 
