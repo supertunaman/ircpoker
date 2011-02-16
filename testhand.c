@@ -253,153 +253,153 @@ int main() {
     /* print each of the above hands and pass them to rank_hand() */
     printf("1: ");
     print_hand(high_card1);
-    if (handcmp(high_card1, high_card2)) 
+    if (handcmp(high_card1, high_card2) > -1) 
         printf(" *");
     puts("");
     printf("2: ");
     print_hand(high_card2);
-    if (handcmp(high_card2, high_card1))
+    if (handcmp(high_card2, high_card1) > -1)
         printf(" *");
     puts("");
     puts("-----");
     
     printf("1: ");
     print_hand(one_pair1);
-    if (handcmp(one_pair1, one_pair2))
+    if (handcmp(one_pair1, one_pair2) > -1)
         printf(" *");
     puts("");
     printf("2: ");
     print_hand(one_pair2);
-    if (handcmp(one_pair2, one_pair1))
+    if (handcmp(one_pair2, one_pair1) > -1)
         printf(" *");
     puts("");
     puts("-----");
 
     printf("1: ");
     print_hand(two_pair1);
-    if (handcmp(two_pair1, two_pair2))
+    if (handcmp(two_pair1, two_pair2) > -1)
         printf(" *");
     puts("");
     printf("2: ");
     print_hand(two_pair2);
-    if (handcmp(two_pair2, two_pair1))
+    if (handcmp(two_pair2, two_pair1) > -1)
         printf(" *");
     puts("");
     puts("-----");
     
     printf("1: ");
     print_hand(three_kind1);
-    if (handcmp(three_kind1, three_kind2))
+    if (handcmp(three_kind1, three_kind2) > -1)
         printf(" *");
     puts("");
     printf("2: ");
     print_hand(three_kind2);
-    if (handcmp(three_kind2, three_kind1))
+    if (handcmp(three_kind2, three_kind1) > -1)
         printf(" *");
     puts("");
     puts("-----");
 
     printf("1: ");
     print_hand(straight1);
-    if (handcmp(straight1, straight2))
+    if (handcmp(straight1, straight2) > -1)
         printf(" *");
     puts("");
     printf("2: ");
     print_hand(straight2);
-    if (handcmp(straight2, straight1))
+    if (handcmp(straight2, straight1) > -1)
         printf(" *");
     puts("");
     puts("-----");
 
     printf("1: ");
     print_hand(flush1);
-    if (handcmp(flush1, flush2))
+    if (handcmp(flush1, flush2) > -1)
         printf(" *");
     puts("");
     printf("2: ");
     print_hand(flush2);
-    if (handcmp(flush2, flush1))
+    if (handcmp(flush2, flush1) > -1)
         printf(" *");
     puts("");
     puts("-----");
 
     printf("1: ");
     print_hand(full_house1);
-    if (handcmp(full_house1, full_house2))
+    if (handcmp(full_house1, full_house2) > -1)
         printf(" *");
     puts("");
     printf("2: ");
     print_hand(full_house2);
-    if (handcmp(full_house2, full_house1))
+    if (handcmp(full_house2, full_house1) > -1)
         printf(" *");
     puts("");
     puts("-----");
 
     printf("1: ");
     print_hand(four_kind1);
-    if (handcmp(four_kind1, four_kind2))
+    if (handcmp(four_kind1, four_kind2) > -1)
         printf(" *");
     puts("");
     printf("2: ");
     print_hand(four_kind2);
-    if (handcmp(four_kind2, four_kind1))
+    if (handcmp(four_kind2, four_kind1) > -1)
         printf(" *");
     puts("");
     puts("-----");
 
     printf("1: ");
     print_hand(straight_flush1);
-    if (handcmp(straight_flush1, straight_flush2))
+    if (handcmp(straight_flush1, straight_flush2) > -1)
         printf(" *");
     puts("");
     printf("2: ");
     print_hand(straight_flush2);
-    if (handcmp(straight_flush2, straight_flush1))
+    if (handcmp(straight_flush2, straight_flush1) > -1)
         printf(" *");
     puts("");
     puts("-----");
 
     printf("1: ");
     print_hand(royal_flush1);
-    if (handcmp(royal_flush1, royal_flush2))
+    if (handcmp(royal_flush1, royal_flush2) > -1)
         printf(" *");
     puts("");
     printf("2: ");
     print_hand(royal_flush2);
-    if (handcmp(royal_flush2, royal_flush1))
+    if (handcmp(royal_flush2, royal_flush1) > -1)
         printf(" *");
     puts("");
 
     printf("\n    Royal Flush ");
-    if (handcmp(royal_flush1, high_card1))
+    if (handcmp(royal_flush1, high_card1) > -1)
         putchar('>');
     else
         putchar('<');
     puts(" High Card");
 
     printf("       One Pair ");
-    if (handcmp(one_pair1, straight_flush1))
+    if (handcmp(one_pair1, straight_flush1) > -1)
         putchar('>');
     else
         putchar('<');
     puts(" Straight Flush");
 
     printf(" Four of a Kind ");
-    if (handcmp(four_kind1, two_pair1))
+    if (handcmp(four_kind1, two_pair1) > -1)
         putchar('>');
     else
         putchar('<');
     puts(" Two Pair");
 
     printf("Three of a Kind ");
-    if (handcmp(three_kind1, full_house1))
+    if (handcmp(three_kind1, full_house1) > -1)
         putchar('>');
     else
         putchar('<');
     puts(" Full House");
 
     printf("          Flush ");
-    if (handcmp(flush1, straight1))
+    if (handcmp(flush1, straight1) > -1)
         putchar('>');
     else
         putchar('<');
