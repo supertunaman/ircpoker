@@ -1,6 +1,15 @@
 #include "hand.h"
 
-void get_best_player_hand(int player_id)
+int playercmp(const void * player1, const void * player2)
+{
+    get_best_player_hand(*(int *)player1);
+    get_best_player_hand(*(int *)player2);
+
+    return handcmp( players[ *(int *)player1 ].best_hand,
+                    players[ *(int *)player2 ].best_hand);
+}
+
+void get_best_player_hand(player_id)
 {
     card_t last_hand[5];
     card_t cur_hand[5];
@@ -21,7 +30,7 @@ void get_best_player_hand(int player_id)
              cur_hand[j] = players[player_id].hand[1];
 
              /* if cur_hand beats last_hand, set last_hand's values to cur_hand's */
-             if (handcmp(cur_hand, last_hand))
+             if (handcmp(cur_hand, last_hand) > 0)
                  for (k = 0; k < 5; k++)
                      last_hand[k] = cur_hand[k];
          }
@@ -33,7 +42,7 @@ void get_best_player_hand(int player_id)
             cur_hand[j] = community[j];
         cur_hand[i] = players[player_id].hand[0];
 
-        if (handcmp(cur_hand, last_hand))
+        if (handcmp(cur_hand, last_hand) > 0)
             for (j = 0; j < 5; j++)
                 last_hand[j] = cur_hand[j];
 
@@ -41,7 +50,7 @@ void get_best_player_hand(int player_id)
             cur_hand[j] = community[j];
         cur_hand[i] = players[player_id].hand[1];
 
-        if (handcmp(cur_hand, last_hand))
+        if (handcmp(cur_hand, last_hand) > 0)
             for (j = 0; j < 5; j++)
                 last_hand[j] = cur_hand[j];
     }
