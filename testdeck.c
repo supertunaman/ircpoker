@@ -51,11 +51,23 @@ void print_community()
     
     printf("Community cards form a ");
     switch (rank_hand(community)) {
+        case ROYALFLUSH:
+            puts("Royal Flush");
+            break;
+        case STRAIGHTFLUSH:
+            puts("Straight Flush");
+            break;
         case FOURKIND:
             puts("Four of a Kind");
             break;
         case FULLHOUSE:
             puts("Full House");
+            break;
+        case FLUSH:
+            puts("Flush");
+            break;
+        case STRAIGHT:
+            puts("Straight");
             break;
         case THREEKIND:
             puts("Three of a Kind");
@@ -173,6 +185,11 @@ int main()
     print_hands();
 
     puts("*** BENCHMARKING ***");
+    start_time[0] = get_time();
+    for (i = 0; i < 5000; i++)
+        shuffle_deck();
+    printf("Shuffled deck 5,000 times in %f\n", get_time() - start_time[0]);
+
     for (i = 0; i < 10; i++) {
         start_time[i] = get_time();
         for (j = 0; j < 100000; j++)
