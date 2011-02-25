@@ -17,5 +17,6 @@ typedef struct player {
 } player_t;
 
 player_t players[10];
+int player_ranks[10];
 
 #endif

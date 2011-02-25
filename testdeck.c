@@ -172,6 +172,12 @@ int main()
 {
     double start_time[10];
     int i, j;
+    
+    for (i = 0; i < 10; i++) {
+        players[i].active = 1;
+        players[i].folded = 0;
+    }
+
     init_deck();
     print_deck();
     puts("*** AFTER SHUFFLING ***");
@@ -184,6 +190,13 @@ int main()
     deal_cards();
     print_hands();
 
+    puts("*** SORTING PLAYERS ***");
+    player_sort();
+    puts("In order of card ranking (low to high):");
+    for (i = 0; i < 10; i++)
+        printf("Player %d\n", player_ranks[i]);
+
+    /*
     puts("*** BENCHMARKING ***");
     start_time[0] = get_time();
     for (i = 0; i < 5000; i++)
@@ -196,6 +209,7 @@ int main()
             get_best_player_hand(i);
         printf("Calculated best hand for Player %d 100,000 times in %f\n", i, get_time() - start_time[i]);
     }
+    */
 
     return 0;
 }

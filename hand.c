@@ -2,11 +2,28 @@
 
 int playercmp(const void * player1, const void * player2)
 {
+    if (players[*(int *)player1].active == 0 ||
+            players[*(int *)player1].folded == 1)
+        return -1;
+    if (players[*(int *)player2].active == 0 ||
+            players[*(int *)player2].folded == 1)
+        return 1;
+
     get_best_player_hand(*(int *)player1);
     get_best_player_hand(*(int *)player2);
 
     return handcmp( players[ *(int *)player1 ].best_hand,
                     players[ *(int *)player2 ].best_hand);
+}
+
+void player_sort()
+{
+    int i;
+
+    for (i = 0; i < 10; i++)
+        player_ranks[i] = i;
+
+    qsort(player_ranks, 10, sizeof(int), playercmp);
 }
 
 void get_best_player_hand(player_id)
