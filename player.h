@@ -4,6 +4,7 @@
 #include "card.h"
 #include "deck.h"
 #include "game.h"
+#include "hand.h"
 
 #define NICK_LEN 32
 
@@ -18,5 +19,9 @@ typedef struct player {
 
 player_t players[10];
 int player_ranks[10];
+
+void get_best_player_hand(int player_id);
+int playercmp(const void * player1, const void * p2);
+void player_sort();
 
 #endif

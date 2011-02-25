@@ -10,7 +10,7 @@ void deal_cards()
     int i;
     for (i=0; i<10; i++)
     {
-        deal(&players[i], i);
+        deal(i);
     }
 }
 

@@ -1,7 +1,6 @@
 #include "deck.h"
-#include "player.h"
 
-void deal(player_t *player, int playeridx)
+void deal(int playeridx)
 {
     int i;
     int c = 0;
@@ -10,7 +9,7 @@ void deal(player_t *player, int playeridx)
         if (!deck[i].dealt) {
             deck[i].dealt = 1;
             deck[i].cardholder = playeridx;
-            (*player).hand[c] = deck[i];
+            players[playeridx].hand[c] = deck[i];
             c++;
         }
         if (c > 1)
