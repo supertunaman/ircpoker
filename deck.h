@@ -10,7 +10,7 @@
 
 card_t deck[52];
 
-void deal(player_t *player, int playeridx);
+void deal(int playeridx);
 void init_deck();
 void shuffle_deck();
 
