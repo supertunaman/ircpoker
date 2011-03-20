@@ -2,6 +2,7 @@
 
 void deal(int playeridx)
 {
+    /* finds next available card and "gives" it to the player */
     int i;
     int c = 0;
     for (i = 0; i < 52; i++)
@@ -19,6 +20,7 @@ void deal(int playeridx)
 
 void init_deck()
 {
+    /* intializes deck, assigns values, suits and sets dealt to 0 */
     int i;
     for (i = 0; i < 52; i++)
     {
@@ -36,11 +38,13 @@ void init_deck()
 
 void shuffle_deck()
 {
+    /* uses RC4 as an RNG to fisher-yates shuffle the deck */
     int i;
     int j;
     struct card tmp;
 
     /* read in a few bytes from /dev/urandom */
+    /* TODO: clean this up a bit, no need to read a file and initialize RC4 every time the deck is shuffled */
     FILE *urandom = fopen("/dev/urandom", "rb");
     char key_buf[KEY_LEN + 1];
     fgets(key_buf, KEY_LEN + 1, urandom);
@@ -49,8 +53,9 @@ void shuffle_deck()
     /* initialize RC4 KSA */
     rc4_init(key_buf, KEY_LEN);
     
-    /* discard 256 bytes */
-    for (i = 0; i < 256; i++) { rc4_output(); }
+    /* discard 256 bytes, like a good boy */
+    for (i = 0; i < 256; i++) 
+        rc4_output();
 
     /* Fisher-Yates shuffle using RC4 as an RNG */
     for (i = 52; i > 1; i--)
@@ -61,3 +66,4 @@ void shuffle_deck()
         deck[i - 1] = tmp;
     }
 }
+

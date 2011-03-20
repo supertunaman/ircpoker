@@ -5,7 +5,7 @@
 #include "deck.h"
 #include "player.h"
 
-card_t community[5];
+card_t community[5]; /* the community cards */
 
 void deal_community();
 

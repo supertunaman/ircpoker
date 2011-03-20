@@ -12,6 +12,7 @@
 
 double get_time()
 {
+    /* used for benchmarking */
     struct timeval t;
     struct timezone tz;
     gettimeofday(&t, &tz);
@@ -20,6 +21,7 @@ double get_time()
 
 void print_hand(card_t hand[])
 {
+    /* pretty prints the given hand */
     int i;
 
     switch (rank_hand(hand)) {
@@ -97,7 +99,7 @@ void print_hand(card_t hand[])
 int main() {
     int i;
     double start_time;
-    card_t high_card1[5];
+    card_t high_card1[5];   /* now we're going to generate several hands and test the ranking stuff */
     card_t high_card2[5];
     card_t one_pair1[5];
     card_t one_pair2[5];
@@ -250,7 +252,8 @@ int main() {
     royal_flush2[3] = deck[12];     /* King of Clubs */
     royal_flush2[4] = deck[0];      /* Ace of Clubs */
 
-    /* print each of the above hands and pass them to rank_hand() */
+    /* print each of the above hands and pass them to rank_hand() 
+     * A star is printed next to the one that's greater, or both if they're equal */
     printf("1: ");
     print_hand(high_card1);
     if (handcmp(high_card1, high_card2) > -1) 
@@ -370,6 +373,7 @@ int main() {
         printf(" *");
     puts("");
 
+    /* testing comparations using simple ranks */
     printf("\n    Royal Flush ");
     if (handcmp(royal_flush1, high_card1) > -1)
         putchar('>');
@@ -405,6 +409,7 @@ int main() {
         putchar('<');
     puts(" Straight");
 
+    /* and now, benchmarking! */
     start_time = get_time();
     for (i = 0; i < 5000000; i++) {
         rank_hand(royal_flush1);

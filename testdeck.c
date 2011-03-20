@@ -16,6 +16,7 @@ void deal_cards()
 
 double get_time()
 {
+    /* used for benchmarking */
     struct timeval t;
     struct timezone tz;
     gettimeofday(&t, &tz);
@@ -24,6 +25,7 @@ double get_time()
 
 void print_community()
 {
+    /* pretty prints the community hand */
     int i;
 
     printf("Community has: ");
@@ -86,6 +88,7 @@ void print_community()
 
 void print_deck()
 {
+    /* pretty prints the entire deck */
     int i;
     for (i=0; i<52; i++)
     {
@@ -108,6 +111,7 @@ void print_deck()
 
 void print_hands()
 {
+    /* prints player hands and their ranks nicely */
     int i;
     int c;
     for (i = 0; i < 10; i++)

@@ -20,7 +20,7 @@ typedef struct player {
 } player_t;
 
 player_t players[10];
-int player_ranks[10];
+int player_ranks[10]; /* used for sorting players to find best hand(s) */
 
 void bet(int player_id, int amount);
 void fold(int player_id);

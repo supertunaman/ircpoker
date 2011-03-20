@@ -2,6 +2,8 @@
 
 void bet(int player_id, int amount)
 {
+    /* sets player's bet to amount */
+    /* TODO: implement pots, and handle that here as well */
     if (amount >= players[player_id].chips) {
         players[player_id].allin = 1;
         players[player_id].bet = players[player_id].chips;
@@ -10,13 +12,15 @@ void bet(int player_id, int amount)
     }
 }
 
-void fold(player_id)
+void fold(int player_id)
 {
+    /* removes player from the current hand */
     players[player_id].folded = 1;
 }
 
-void get_best_player_hand(player_id)
+void get_best_player_hand(int player_id)
 {
+    /* finds the best possible 5-card hand for players[player_id] */
     card_t last_hand[5];
     card_t cur_hand[5];
     int i;
@@ -68,6 +72,7 @@ void get_best_player_hand(player_id)
 
 int playercmp(const void * player1, const void * player2)
 {
+    /* compares two players in a way that is usable by qsort() */
     if (players[*(int *)player1].active == 0 ||
             players[*(int *)player1].folded == 1)
         return -1;
@@ -75,7 +80,7 @@ int playercmp(const void * player1, const void * player2)
             players[*(int *)player2].folded == 1)
         return 1;
 
-    get_best_player_hand(*(int *)player1);
+    get_best_player_hand(*(int *)player1); /* might want to do once this outside of this function, for all players? */
     get_best_player_hand(*(int *)player2);
 
     return handcmp( players[ *(int *)player1 ].best_hand,

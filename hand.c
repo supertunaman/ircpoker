@@ -2,6 +2,8 @@
 
 int handcmp(card_t hand1[], card_t hand2[])
 {
+    /* compares two 5-card hands
+     * returns -1 if hand1 is lesser, 0 if it's equal, and 1 if it's greater than hand2 */
     ranks_t rank1 = rank_hand(hand1);
     ranks_t rank2 = rank_hand(hand2);
     int handvals1[5];
@@ -304,6 +306,7 @@ int handcmp(card_t hand1[], card_t hand2[])
 
 void promote_aces(int handvals[])
 {
+    /* Aces have a value of 0. This makes them "worth" more than other cards, where high card is important. */
     int i;
     
     for (i = 0; i < 5; i++) {
@@ -329,6 +332,7 @@ void sort(int a[], int n)
 
 ranks_t rank_hand(card_t hand[])
 {
+    /* gives hand a rank, such as two pair or flush. */
     int handvals[5];
     int histogram[13];
     int i;
@@ -339,9 +343,7 @@ ranks_t rank_hand(card_t hand[])
 
     /* generate histogram of multiples */
     for (i = 0; i < 5; i++)
-    {
         histogram[hand[i].value - 1]++;
-    }
     sort(histogram, 13);
     
     /* evaluate sorted histogram */

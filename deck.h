@@ -6,7 +6,7 @@
 #include "card.h"
 #include "player.h"
 
-#define KEY_LEN 10
+#define KEY_LEN 10 /* used to key RC4 for the shuffle. loloverkill */
 
 card_t deck[52];
 

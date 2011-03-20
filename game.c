@@ -2,6 +2,7 @@
 
 void deal_community()
 {
+    /* Gives 5 cards to COMMUNITY */
     int i;
     int c = 0;
     for (i = 0; i < 52; i++)
