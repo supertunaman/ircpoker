@@ -1,5 +1,20 @@
 #include "player.h"
 
+void bet(int player_id, int amount)
+{
+    if (amount >= players[player_id].chips) {
+        players[player_id].allin = 1;
+        players[player_id].bet = players[player_id].chips;
+    } else {
+        players[player_id].bet = amount;
+    }
+}
+
+void fold(player_id)
+{
+    players[player_id].folded = 1;
+}
+
 void get_best_player_hand(player_id)
 {
     card_t last_hand[5];
