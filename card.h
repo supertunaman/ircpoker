@@ -1,3 +1,6 @@
+/* Copyright 2011 Tuna <tuna@supertunaman.com
+ * This code is under the Chicken Dance License v0.1 */
+
 #ifndef CARD_H
 #define CARD_H
 

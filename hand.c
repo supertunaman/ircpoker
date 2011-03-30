@@ -1,3 +1,5 @@
+/* Copyright 2011 Tuna <tuna@supertunaman.com
+ * This code is under the Chicken Dance License v0.1 */
 #include "hand.h"
 
 int handcmp(card_t hand1[], card_t hand2[])
@@ -26,8 +28,10 @@ int handcmp(card_t hand1[], card_t hand2[])
     int tmp;
 
     /* set all histogram values to 0 */
-    for (i = 0; i < 15; i++) { histogram1[i] = 0; }
-    for (i = 0; i < 15; i++) { histogram2[i] = 0; }
+    for (i = 0; i < 15; i++) { 
+        histogram1[i] = 0; 
+        histogram2[i] = 0; 
+    }
     
     /* put values of cards into handvals arrays and sort */
     for (i = 0; i < 5; i++) {

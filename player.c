@@ -1,3 +1,5 @@
+/* Copyright 2011 Tuna <tuna@supertunaman.com
+ * This code is under the Chicken Dance License v0.1 */
 #include "player.h"
 
 void bet(int player_id, int amount)

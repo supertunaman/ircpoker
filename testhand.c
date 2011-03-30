@@ -1,3 +1,6 @@
+/* Copyright 2011 Tuna <tuna@supertunaman.com
+ * This code is under the Chicken Dance License v0.1 */
+
 /* testing the rank_hand function in hand.h
  * 
  * test vectors gathered from the "poker hand rankings" card in a deck

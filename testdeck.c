@@ -1,3 +1,5 @@
+/* Copyright 2011 Tuna <tuna@supertunaman.com
+ * This code is under the Chicken Dance License v0.1 */
 #include <stdio.h>
 #include <sys/time.h>
 #include <sys/resource.h>
