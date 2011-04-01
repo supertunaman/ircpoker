@@ -2,6 +2,64 @@
  * This code is under the Chicken Dance License v0.1 */
 #include "hand.h"
 
+/*
+ * Queso, this file is where all the hand-evaluating magic is. It is based on
+ * a description of an algorithm by Nick Sayer.
+ *
+ * http://nsayer.blogspot.com/2007/07/algorithm-for-evaluating-poker-hands.html
+ *
+ * Its method of operation is fairly simple.
+ *
+ *  1.  Two five-card hands are ranked. That is, they are passed to rank_hand() 
+ *      which finds out if the hand is a pair, straight, flush, or whatever. 
+ *      This is an operation in and of itself.
+ *  
+ *      * A histogram is made of the cards in the hand. If there are four of 
+ *          one card, it's a four of a kind. If there are three of one card, 
+ *          it's a three of a kind or a full house if there is also another
+ *          pair, etc. A value is returned if any sort of pair or multiple is 
+ *          found.
+ *      * Failing that, we check for a flush by checking the cards' suits. If 
+ *          it is a flush, a value is not yet returned, because it could be 
+ *          a straight or a royal flush.
+ *      * The hand is tested for a straight. Since the possibility of multiples 
+ *          has been ruled out, the hand is sorted and the top value is 
+ *          subtracted from the low value. If that equals 4, it's a straight. 
+ *          If the test for a flush succeeded, then it's a straight flush.
+ *          If there is an ace in the deck, and its value is promoted to 14,
+ *          and the low card is 10, and the flush test succeeded, then it's a 
+ *          royal flush. Otherwise, either flush or high card is returned.
+ *
+ *  2.  If the hand ranks differ, then a result is returned.
+ *  3.  If the hand rank is a royal flush, 0 is returned, indicating that the 
+ *      hands are equal.
+ *  4.  If the hands are straights or straith flushes, the high card is 
+ *      compared.
+ *  5.  If the hands are Flushes or High Cards, then we iterate down the sorted 
+ *      lists and compare each card.
+ *  6.  If the hand is a four of a kind, then the third card in the sorted 
+ *      lists are compared, and then the kicker (determined to be element 0 or 
+ *      4 in either).
+ *  7.  For a full house, element 2 is compared again, and then the other pairs
+ *      are found and compared.
+ *  8.  Three of a kind is similar to a full house, except the other two cards 
+ *      are not a pair.
+ *  9.  For a two pair, the two pairs are each found and compared, and then the
+ *      kicker.
+ *  10. In the case of a one pair, the pair is found and compared at first, 
+ *      and then the third, fourth, and fifth cards.
+ *
+ *  And that's how it works. Some notes:
+ *
+ *  For some reason, I have aces hold a value of 0 by default, and raise its 
+ *  value to 14 when it's worth more than other cards (which is most of the 
+ *  time) rather than dropping to 0 when it's a low card.
+ *
+ *  I think I handled straights incorrectly, in that a 10 J Q K A straight 
+ *  would not be recognized as a straight unless it actually turns out to be a 
+ *  royal flush. Will investigate later.
+ */
+
 int handcmp(card_t hand1[], card_t hand2[])
 {
     /* compares two 5-card hands
