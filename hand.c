@@ -434,10 +434,17 @@ ranks_t rank_hand(card_t hand[])
     for (i = 0; i < 5; i++) { handvals[i] = hand[i].value; }
     sort(handvals, 5);
 
+    straights:
+
     if (handvals[4] - handvals[0] == 4 && flush == 5) 
         return STRAIGHTFLUSH;
     if (handvals[4] - handvals[0] == 4)
         return STRAIGHT;
+
+    if (handvals[0] = 1) {
+        promote_aces(handvals);
+        goto straights;
+    }
     
     /* test for flush and royal flush */
     handvals[0] = 14;
