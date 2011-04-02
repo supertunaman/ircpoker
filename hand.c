@@ -441,7 +441,7 @@ ranks_t rank_hand(card_t hand[])
     if (handvals[4] - handvals[0] == 4)
         return STRAIGHT;
 
-    if (handvals[0] = 1) {
+    if (handvals[0] == 1) {
         promote_aces(handvals);
         goto straights;
     }
