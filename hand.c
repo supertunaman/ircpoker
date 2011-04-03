@@ -114,6 +114,14 @@ int handcmp(card_t hand1[], card_t hand2[])
         /* same process for straight and straight flush */
         case STRAIGHT:
         case STRAIGHTFLUSH:
+            /* promote ace if it's ace high */
+            if (handvals1[4] == 13) /* after sorting, the last card will be king in an ace-high straight */
+                promote_aces(handvals1);
+            if (handvals2[4] == 13)
+                promote_aces(handvals2);
+            sort(handvals1, 5);
+            sort(handvals2, 5);
+
             /* compare the last (highest) element of each array */
             if (handvals1[4] < handvals2[4])
                 return -1;
