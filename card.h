@@ -4,7 +4,7 @@
 #ifndef CARD_H
 #define CARD_H
 
-#define COMMUNITY 10 /* if a card_t's cardholder is this, then it's a community card */
+#define COMMUNITY -1 /* if a card_t's cardholder is this, then it's a community card */
 
 typedef enum suit {
     CLUBS,

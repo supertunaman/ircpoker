@@ -122,8 +122,9 @@ int main() {
     card_t straight_flush2[5];
     card_t royal_flush1[5];
     card_t royal_flush2[5];
-    
-    init_deck();
+    card_t deck[52];
+
+    init_deck(deck);
 
     /* construct high card */
     high_card1[0] = deck[26];       /* Ace of Hearts */

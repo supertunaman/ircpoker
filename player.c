@@ -2,25 +2,27 @@
  * This code is under the Chicken Dance License v0.1 */
 #include "player.h"
 
-void bet(int player_id, int amount)
+#include <stdlib.h>
+
+void bet(game_tp g, int player_id, int amount)
 {
     /* sets player's bet to amount */
     /* TODO: implement pots, and handle that here as well */
-    if (amount >= players[player_id].chips) {
-        players[player_id].allin = 1;
-        players[player_id].bet = players[player_id].chips;
+    if (amount >= g->players[player_id].chips) {
+        g->players[player_id].allin = 1;
+        g->players[player_id].bet = g->players[player_id].chips;
     } else {
-        players[player_id].bet = amount;
+        g->players[player_id].bet = amount;
     }
 }
 
-void fold(int player_id)
+void fold(game_tp g, int player_id)
 {
     /* removes player from the current hand */
-    players[player_id].folded = 1;
+    g->players[player_id].folded = 1;
 }
 
-void get_best_player_hand(int player_id)
+void get_best_player_hand(game_tp g, int player_id)
 {
     /* finds the best possible 5-card hand for players[player_id] */
     card_t last_hand[5];
@@ -31,15 +33,15 @@ void get_best_player_hand(int player_id)
 
     /* compare to the community cards first */
     for (i = 0; i < 5; i++)
-        last_hand[i] = community[i];
+        last_hand[i] = g->community[i];
 
     /* replace two of the community cards at a time with the pocket cards */
     for (i = 0; i < 5; i++) {
          for (j = 0; j < i; j++) {
              for (k = 0; k < 5; k++)
-                 cur_hand[k] = community[k];
-             cur_hand[i] = players[player_id].hand[0];
-             cur_hand[j] = players[player_id].hand[1];
+                 cur_hand[k] = g->community[k];
+             cur_hand[i] = g->players[player_id].hand[0];
+             cur_hand[j] = g->players[player_id].hand[1];
 
              /* if cur_hand beats last_hand, set last_hand's values to cur_hand's */
              if (handcmp(cur_hand, last_hand) > 0)
@@ -51,16 +53,16 @@ void get_best_player_hand(int player_id)
     /* now replace one card at a time and compare */
     for (i = 0; i < 5; i++) {
         for (j = 0; j < 5; j++)
-            cur_hand[j] = community[j];
-        cur_hand[i] = players[player_id].hand[0];
+            cur_hand[j] = g->community[j];
+        cur_hand[i] = g->players[player_id].hand[0];
 
         if (handcmp(cur_hand, last_hand) > 0)
             for (j = 0; j < 5; j++)
                 last_hand[j] = cur_hand[j];
 
         for (j = 0; j < 5; j++)
-            cur_hand[j] = community[j];
-        cur_hand[i] = players[player_id].hand[1];
+            cur_hand[j] = g->community[j];
+        cur_hand[i] = g->players[player_id].hand[1];
 
         if (handcmp(cur_hand, last_hand) > 0)
             for (j = 0; j < 5; j++)
@@ -69,33 +71,48 @@ void get_best_player_hand(int player_id)
 
     /* by now, last_hand should be the best possible hand */
     for (i = 0; i < 5; i++)
-        players[player_id].best_hand[i] = last_hand[i];
+        g->players[player_id].best_hand[i] = last_hand[i];
 }
+
+/* TODO: stop using qsort and get rid of this evil.
+ * We might want thread safety some day. */
+static game_tp _current_game;
 
 int playercmp(const void * player1, const void * player2)
 {
     /* compares two players in a way that is usable by qsort() */
-    if (players[*(int *)player1].active == 0 ||
-            players[*(int *)player1].folded == 1)
+    if (_current_game->players[*(int *)player1].active == 0 ||
+            _current_game->players[*(int *)player1].folded == 1)
         return -1;
-    if (players[*(int *)player2].active == 0 ||
-            players[*(int *)player2].folded == 1)
+    if (_current_game->players[*(int *)player2].active == 0 ||
+            _current_game->players[*(int *)player2].folded == 1)
         return 1;
 
-    get_best_player_hand(*(int *)player1); /* might want to do once this outside of this function, for all players? */
-    get_best_player_hand(*(int *)player2);
-
-    return handcmp( players[ *(int *)player1 ].best_hand,
-                    players[ *(int *)player2 ].best_hand);
+    return handcmp( _current_game->players[ *(int *)player1 ].best_hand,
+                    _current_game->players[ *(int *)player2 ].best_hand);
 }
 
-void player_sort()
+/* pass array long enough for all players */
+void get_player_ranks(game_tp g, int ranking_array[])
 {
     int i;
 
-    for (i = 0; i < 10; i++)
-        player_ranks[i] = i;
+    for (i = 0; i < g->n_players; i++) {
+        ranking_array[i] = i;
+        get_best_player_hand(g, i);
+    }
 
-    qsort(player_ranks, 10, sizeof(int), playercmp);
+    _current_game = g;
+
+    qsort(ranking_array, g->n_players, sizeof(int), playercmp);
 }
+
+/* free result with free() when done. */
+int *alloc_player_ranks(game_tp g)
+{
+    int *ranking_array = malloc(sizeof (int) * g->n_players);
+    get_player_ranks(g, ranking_array);
+    return ranking_array;
+}
+
 

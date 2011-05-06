@@ -7,12 +7,14 @@
 #include "game.h"
 #include "hand.h"
 
+static game_tp testgame;
+
 void deal_cards()
 {
     int i;
     for (i=0; i<10; i++)
     {
-        deal(i);
+        deal(testgame, i);
     }
 }
 
@@ -33,18 +35,18 @@ void print_community()
     printf("Community has: ");
     for (i = 0; i < 5; i++)
     {
-        switch (community[i].suit) {
+        switch (testgame->community[i].suit) {
             case CLUBS:
-                printf("%d of Clubs", community[i].value);
+                printf("%d of Clubs", testgame->community[i].value);
                 break;
             case DIAMONDS:
-                printf("%d of Diamonds", community[i].value);
+                printf("%d of Diamonds", testgame->community[i].value);
                 break;
             case HEARTS:
-                printf("%d of Hearts", community[i].value);
+                printf("%d of Hearts", testgame->community[i].value);
                 break;
             case SPADES:
-                printf("%d of Spades", community[i].value);
+                printf("%d of Spades", testgame->community[i].value);
                 break;
         }
         if (i < 4)
@@ -54,7 +56,7 @@ void print_community()
     }
     
     printf("Community cards form a ");
-    switch (rank_hand(community)) {
+    switch (rank_hand(testgame->community)) {
         case ROYALFLUSH:
             puts("Royal Flush");
             break;
@@ -94,18 +96,18 @@ void print_deck()
     int i;
     for (i=0; i<52; i++)
     {
-        switch (deck[i].suit) {
+        switch (testgame->deck[i].suit) {
             case CLUBS:
-                printf("%d of Clubs\n", deck[i].value);
+                printf("%d of Clubs\n", testgame->deck[i].value);
                 break;
             case DIAMONDS:
-                printf("%d of Diamonds\n", deck[i].value);
+                printf("%d of Diamonds\n", testgame->deck[i].value);
                 break;
             case HEARTS:
-                printf("%d of Hearts\n", deck[i].value);
+                printf("%d of Hearts\n", testgame->deck[i].value);
                 break;
             case SPADES:
-                printf("%d of Spades\n", deck[i].value);
+                printf("%d of Spades\n", testgame->deck[i].value);
                 break;
         }
     }
@@ -121,25 +123,25 @@ void print_hands()
         printf("Player %d has ", i);
         for (c = 0; c < 2; c++)
         {
-            switch (players[i].hand[c].suit) {
+            switch (testgame->players[i].hand[c].suit) {
                 case CLUBS:
-                    printf("%02d of Clubs ", players[i].hand[c].value);
+                    printf("%02d of Clubs ", testgame->players[i].hand[c].value);
                     break;
                 case DIAMONDS:
-                    printf("%02d of Diamonds ", players[i].hand[c].value);
+                    printf("%02d of Diamonds ", testgame->players[i].hand[c].value);
                     break;
                 case HEARTS:
-                    printf("%02d of Hearts ", players[i].hand[c].value);
+                    printf("%02d of Hearts ", testgame->players[i].hand[c].value);
                     break;
                 case SPADES:
-                    printf("%02d of Spades ", players[i].hand[c].value);
+                    printf("%02d of Spades ", testgame->players[i].hand[c].value);
                     break;
             }
             if (c < 1) { printf("and "); }
         }
         printf("\n");
-        get_best_player_hand(i);
-        switch (rank_hand(players[i].best_hand)) {
+        get_best_player_hand(testgame, i);
+        switch (rank_hand(testgame->players[i].best_hand)) {
             case ROYALFLUSH:
                 puts("...Royal Flush");
                 break;
@@ -178,29 +180,28 @@ int main()
 {
     double start_time[10];
     int i, j;
+    int sorted_players[10];
     
+    testgame = new_game(10);
     for (i = 0; i < 10; i++) {
-        players[i].active = 1;
-        players[i].folded = 0;
+        testgame->players[i].active = 1;
     }
-
-    init_deck();
     print_deck();
     puts("*** AFTER SHUFFLING ***");
-    shuffle_deck();
+    shuffle_deck(testgame);
     print_deck();
     puts("*** COMMUNITY CARDS ***");
-    deal_community();
+    deal_community(testgame);
     print_community();
     puts("*** DEALING CARDS ***");
     deal_cards();
     print_hands();
 
     puts("*** SORTING PLAYERS ***");
-    player_sort();
+    get_player_ranks(testgame, sorted_players);
     puts("In order of card ranking (low to high):");
     for (i = 0; i < 10; i++)
-        printf("Player %d\n", player_ranks[i]);
+        printf("Player %d\n", sorted_players[i]);
 
     /*
     puts("*** BENCHMARKING ***");

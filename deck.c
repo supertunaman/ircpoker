@@ -2,17 +2,17 @@
  * This code is under the Chicken Dance License v0.1 */
 #include "deck.h"
 
-void deal(int playeridx)
+void deal(game_tp g, int playeridx)
 {
     /* finds next available card and "gives" it to the player */
     int i;
     int c = 0;
     for (i = 0; i < 52; i++)
     {
-        if (!deck[i].dealt) {
-            deck[i].dealt = 1;
-            deck[i].cardholder = playeridx;
-            players[playeridx].hand[c] = deck[i];
+        if (!g->deck[i].dealt) {
+            g->deck[i].dealt = 1;
+            g->deck[i].cardholder = playeridx;
+            g->players[playeridx].hand[c] = g->deck[i];
             c++;
         }
         if (c > 1)
@@ -20,7 +20,7 @@ void deal(int playeridx)
     }
 }
 
-void init_deck()
+void init_deck(card_t deck[])
 {
     /* intializes deck, assigns values, suits and sets dealt to 0 */
     int i;
@@ -38,7 +38,7 @@ void init_deck()
     }
 }
 
-void shuffle_deck()
+void shuffle_deck(game_tp g)
 {
     /* uses RC4 as an RNG to fisher-yates shuffle the deck */
     int i;
@@ -63,9 +63,9 @@ void shuffle_deck()
     for (i = 52; i > 1; i--)
     {
         j = rc4_output() % i;
-        tmp = deck[j];
-        deck[j] = deck[i - 1];
-        deck[i - 1] = tmp;
+        tmp = g->deck[j];
+        g->deck[j] = g->deck[i - 1];
+        g->deck[i - 1] = tmp;
     }
 }
 

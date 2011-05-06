@@ -6,15 +6,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "card.h"
+#include "game.h"
 #include "player.h"
 
 #define KEY_LEN 10 /* used to key RC4 for the shuffle. loloverkill */
 
-card_t deck[52];
+/* card_t deck[52]; */
 
-void deal(int playeridx);
-void init_deck();
-void shuffle_deck();
+void deal(game_tp, int playeridx);
+void init_deck(card_t deck[]);
+void shuffle_deck(game_tp);
 
 #endif
 

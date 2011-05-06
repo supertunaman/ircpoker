@@ -4,9 +4,6 @@
 #define PLAYER_H
 
 #include "card.h"
-#include "deck.h"
-#include "game.h"
-#include "hand.h"
 
 #define NICK_LEN 32
 
@@ -21,13 +18,19 @@ typedef struct player {
     int folded;
 } player_t;
 
-player_t players[10];
-int player_ranks[10]; /* used for sorting players to find best hand(s) */
+#include "deck.h"
+#include "game.h"
+#include "hand.h"
 
-void bet(int player_id, int amount);
-void fold(int player_id);
-void get_best_player_hand(int player_id);
-int playercmp(const void * player1, const void * p2);
-void player_sort();
+/* sounds like a local variable? we'll see */
+/* int player_ranks[10]; */ /* used for sorting players to find best hand(s) */
+
+void bet(game_tp, int player_id, int amount);
+void fold(game_tp, int player_id);
+void get_best_player_hand(game_tp, int player_id);
+/* pass array long enough for all players */
+void get_player_ranks(game_tp, int ranking_array[]);
+/* free result with free() when done. */
+int *alloc_player_ranks(game_tp);
 
 #endif
