@@ -16,6 +16,7 @@
 void deal(game_tp, int playeridx);
 void init_deck(card_t deck[]);
 void shuffle_deck(game_tp);
+void undeal(game_tp g);
 
 #endif
 

@@ -34,6 +34,60 @@ separate_first_word (char **txt, char **restp)
     *p = '\0';
 }
 
+static void
+deal_round (irc_session_t *session,
+            game_tp game,
+            const char *channel)
+{
+    char *s;
+
+    if (!game->phase == PHASE_PRE_DEAL) return;
+
+    undeal(game);
+    shuffle_deck(game);
+
+    int small = next_active(game, game->button);
+    int big = next_active(game, small);
+
+    bet (game, small, game->small_blind);
+    if (asprintf(&s, "%s pays small blind of %d.", game->players[small].nick,
+                                                   game->small_blind) != -1) {
+        irc_cmd_msg(session, channel, s);
+        free(s);
+    }
+
+    bet (game, big, game->big_blind);
+    if (asprintf(&s, "%s pays big blind of %d.", game->players[big].nick,
+                                                 game->big_blind) != -1) {
+        irc_cmd_msg(session, channel, s);
+        free(s);
+    }
+
+
+    int pidx = small;
+    do {
+        deal(game, pidx);
+        char *card1 = strdup(irc_print_card(game->players[pidx].hand[0], 1, 1));
+        char *card2 = strdup(irc_print_card(game->players[pidx].hand[1], 1, 1));
+        if (asprintf(&s, "Your cards: %s %s", card1, card2) != -1) {
+            irc_cmd_msg(session, game->players[pidx].nick, s);
+            free(s);
+        }
+        free(card1);
+        free(card2);
+    } while ((pidx = next_active(game, pidx)) != small);
+
+    game->turn = next_active(game, big);
+    game->phase = PHASE_PRE_FLOP;
+
+    if (asprintf(&s, "Cards dealt. %s, the bet is %d. Do you call?",
+                                     game->players[game->turn].nick,
+                                     game->big_blind) != -1) {
+        irc_cmd_msg(session, channel, s);
+        free(s);
+    }
+}
+
 void
 process_cmd (irc_session_t *session,
              const char *from, const char *channel,
@@ -54,7 +108,7 @@ process_cmd (irc_session_t *session,
     } else if (strcasecmp(cmd, "help") == 0) {
         const char *to = channel ? channel : from_nick;
         irc_cmd_msg(session, to, "This is ircpoker."); usleep(100);
-        irc_cmd_msg(session, to, "List of available bot commands: quit, init, game, set, help"); usleep(100);
+        irc_cmd_msg(session, to, "List of available bot commands: quit, init, game, set, deal, help"); usleep(100);
         irc_cmd_msg(session, to, "List of in-game to-the-table declarations: what's the game?, join game, afk, leave game, re, back");
     } else if (strcasecmp(cmd, "init") == 0) {
         /* new game */
@@ -128,6 +182,15 @@ process_cmd (irc_session_t *session,
                 irc_cmd_msg(session, channel, "Unknown setting."); usleep(100);
                 irc_cmd_msg(session, channel, "Usage: set [base stock|small blind|big blind] [|=|to] {value}");
             }
+        } else {
+            irc_cmd_msg(session, channel ? channel : from_nick, "No game.");
+        }
+    } else if (strcasecmp(cmd, "deal") == 0) {
+        if ((game = get_channel_game(session, channel))) {
+            if (strcmp(from_nick, game->house->nick) != 0) {
+                irc_cmd_msg(session, channel, "Only The House may call for first deal.");
+            }
+            deal_round(session, game, channel);
         } else {
             irc_cmd_msg(session, channel ? channel : from_nick, "No game.");
         }
@@ -242,4 +305,5 @@ list_game_info (irc_session_t *session, game_tp game, const char *dest)
 
     free(s);
 }
+
 

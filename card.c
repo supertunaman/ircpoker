@@ -6,10 +6,10 @@
 
 char *irc_print_card (card_t card, int color, int utf8)
 {
-    static const char *red_start = "\x03" "2";
+    static const char *red_start = "\x03" "4 ";
     static const char *red_end = "\x03";
 
-    static char result[16];
+    static char result[32];
     char *resp = result;
     int red = 0;
 

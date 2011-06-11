@@ -73,3 +73,12 @@ void shuffle_deck(game_tp g)
     }
 }
 
+void undeal(game_tp g)
+{
+    int i;
+
+    for (i=0; i<52; ++i) {
+        g->deck[i].dealt = 0;
+    }
+}
+

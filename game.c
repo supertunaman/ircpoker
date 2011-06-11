@@ -56,7 +56,7 @@ new_game (int n_players)
     return g;
 }
 
-void free_game(game_tp g)
+void free_game (game_tp g)
 {
     int i;
     for (i=0; i<g->n_pots; ++i)
@@ -65,5 +65,17 @@ void free_game(game_tp g)
     free(g->pots);
     free(g->players);
     free(g);
+}
+
+int
+next_active (game_tp g, int playeridx)
+{
+    int res = playeridx;
+    do {
+        res++;
+        if (res >= g->n_players) res = 0;
+        if (res == playeridx) return -1;
+    } while (!g->players[res].active);
+    return res;
 }
 
