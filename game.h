@@ -9,13 +9,43 @@ typedef struct game *game_tp;
 #include "deck.h"
 #include "player.h"
 
+typedef struct pot {
+    int content;
+    player_t *players;
+    int n_players;
+} pot_t;
+
+enum game_phase {
+    PHASE_PRE_DEAL,
+    PHASE_PRE_FLOP,
+    PHASE_FLOP,
+    PHASE_TURN,
+    PHASE_RIVER
+};
+
 struct game {
+    /* infrastructure */
     card_t deck[52];
-    int pot;
     card_t community[5];    /* the community cards */
     player_t *players;
     int n_players;
+    pot_t *pots;
+    int n_pots;
+
+    /* rules */
+    int small_blind, big_blind;
+    int betting_unit;
+    int base_stock;
+    /* TODO: limits */
+
+    player_t *house; /* overlord */
+
+    /* situation */
+    enum game_phase phase;
+    int turn;
+    int button;
 };
+
 
 void deal_community(game_tp);
 

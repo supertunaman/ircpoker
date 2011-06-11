@@ -21,5 +21,7 @@ typedef struct card {
     int cardholder; 
 } card_t;
 
+char *irc_print_card (card_t card, int color, int utf8);
+
 #endif
 

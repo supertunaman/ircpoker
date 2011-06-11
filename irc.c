@@ -17,6 +17,7 @@ void on_generic (irc_session_t *session, const char *event, const char *origin, 
 void on_numeric (irc_session_t *session, unsigned event, const char *origin, const char **params, unsigned count);
 
 static char *irc_nick;
+struct channel_game *channel_games_list = NULL;
 
 /* might want different nicks on different servers some day. */
 const char *
@@ -121,8 +122,9 @@ on_chanmsg (irc_session_t *session, const char *event,
 
     if (strcmp(dest, get_irc_nick(session)) == 0) {
         /* the lib can get confused when the server silently changes the nick) */
-        return on_privmsg(session, event, origin, params, count);
+        on_privmsg(session, event, origin, params, count);
         free(msg);
+        return;
     }
 
     printf("%s in %s: \"%s\"\n", origin, dest, msg);
@@ -139,11 +141,13 @@ on_chanmsg (irc_session_t *session, const char *event,
     if (strcmp(firstword, get_irc_nick(session)) == 0) {
         process_cmd(session, origin, dest, &msg[len+1]);
     } else {
-        /* TODO:
-         * check if there's an active game in this channel.
-         * if there is, check all msg for ingame commands like 'fold', 'hit', etc.
-         * This should p'bly be a separate function in command.c.
-         */
+        /* is there a game on the channel? If so, check all messages for 
+         * betting-round commands */
+        game_tp game;
+        
+        if ((game = get_channel_game(session, dest))) {
+            process_bet_cmd(session, origin, dest, game, msg);
+        }
     }
     free(firstword);
 
@@ -191,5 +195,18 @@ on_numeric (irc_session_t *session, unsigned event, const char *origin, const ch
         irc_nick = strdup(params[0]);
         free(old_irc_nick);
     }
+}
+
+game_tp
+get_channel_game (irc_session_t *session, const char *channel)
+{
+    struct channel_game *cg;
+
+    if (!channel) return NULL;
+    for (cg = channel_games_list; cg; cg = cg->next)
+        if (cg->session == session && !strcasecmp(cg->channel, channel))
+            return cg->game;
+
+    return NULL;
 }
 

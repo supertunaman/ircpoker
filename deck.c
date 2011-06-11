@@ -2,6 +2,10 @@
  * This code is under the Chicken Dance License v0.1 */
 #include "deck.h"
 
+void rc4_init(unsigned char *key, unsigned int key_length);
+unsigned char rc4_output();
+
+
 void deal(game_tp g, int playeridx)
 {
     /* finds next available card and "gives" it to the player */
@@ -48,8 +52,8 @@ void shuffle_deck(game_tp g)
     /* read in a few bytes from /dev/urandom */
     /* TODO: clean this up a bit, no need to read a file and initialize RC4 every time the deck is shuffled */
     FILE *urandom = fopen("/dev/urandom", "rb");
-    char key_buf[KEY_LEN + 1];
-    fgets(key_buf, KEY_LEN + 1, urandom);
+    unsigned char key_buf[KEY_LEN + 1];
+    fgets((char *)key_buf, KEY_LEN + 1, urandom);
     fclose(urandom);
     
     /* initialize RC4 KSA */

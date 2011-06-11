@@ -28,7 +28,6 @@ new_game (int n_players)
     struct game *g;
 
     g = (struct game *) malloc(sizeof (struct game));
-    g->pot = 0;
     /* calloc overwrites with zeroes. All players will be:
      * active = 0
      * folded = 0
@@ -37,6 +36,20 @@ new_game (int n_players)
      */
     g->players = calloc(n_players, sizeof (player_t));
     g->n_players = n_players;
+    g->pots = calloc(1, sizeof (pot_t));
+    g->n_pots = 1;
+    g->pots[0].players = g->players;
+    g->pots[0].n_players = g->n_players;
+
+    /* defaults */
+    g->small_blind = 1;
+    g->big_blind = 2;
+    g->betting_unit = 0;
+    g->base_stock = 0;
+
+    g->phase = PHASE_PRE_DEAL;
+    g->turn = 0;
+    g->button = 0;
 
     init_deck(g->deck);
 
@@ -45,6 +58,11 @@ new_game (int n_players)
 
 void free_game(game_tp g)
 {
+    int i;
+    for (i=0; i<g->n_pots; ++i)
+        if (g->pots[i].players != g->players)
+            free(g->pots[i].players);
+    free(g->pots);
     free(g->players);
     free(g);
 }
