@@ -4,11 +4,12 @@ ircpoker
 the poker-dealing IRC bot!
 
 to build:
- - testdeck: cc testdeck.c deck.c game.c rc4.c hand.c player.c -o testdeck
- - testhand: cc testhand.c deck.c game.c rc4.c hand.c player.c -o testhand
+ make
+
+to build and run the test programs:
+ make test
 
 TODO:
- - the IRC part
  - betting rounds and other game stuff
  - config stuff
 
