@@ -52,7 +52,7 @@ void deal_community(game_tp);
 game_tp new_game(int n_players);
 void free_game(game_tp);
 
-int next_active(game_tp, int playeridx);
+int next_player(game_tp, int playeridx);
 
 #endif
 

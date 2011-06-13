@@ -44,10 +44,16 @@ deal_round (irc_session_t *session,
     if (!game->phase == PHASE_PRE_DEAL) return;
 
     undeal(game);
+    int i;
+    for (i=0; i<game->n_players; ++i) {
+        game->players[i].folded = game->players[i].active;
+        game->players[i].bet = 0;
+        game->players[i].allin = 0;
+    }
     shuffle_deck(game);
 
-    int small = next_active(game, game->button);
-    int big = next_active(game, small);
+    int small = next_player(game, game->button);
+    int big = next_player(game, small);
 
     bet (game, small, game->small_blind);
     if (asprintf(&s, "%s pays small blind of %d.", game->players[small].nick,
@@ -75,9 +81,9 @@ deal_round (irc_session_t *session,
         }
         free(card1);
         free(card2);
-    } while ((pidx = next_active(game, pidx)) != small);
+    } while ((pidx = next_player(game, pidx)) != small);
 
-    game->turn = next_active(game, big);
+    game->turn = next_player(game, big);
     game->phase = PHASE_PRE_FLOP;
 
     if (asprintf(&s, "Cards dealt. %s, the bet is %d. Do you call?",

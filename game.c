@@ -68,14 +68,14 @@ void free_game (game_tp g)
 }
 
 int
-next_active (game_tp g, int playeridx)
+next_player (game_tp g, int playeridx)
 {
     int res = playeridx;
     do {
         res++;
         if (res >= g->n_players) res = 0;
         if (res == playeridx) return -1;
-    } while (!g->players[res].active);
+    } while (!g->players[res].folded);
     return res;
 }
 
