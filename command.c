@@ -46,7 +46,8 @@ deal_round (irc_session_t *session,
     undeal(game);
     int i;
     for (i=0; i<game->n_players; ++i) {
-        game->players[i].folded = game->players[i].active;
+        game->players[i].folded = (!game->players[i].active)
+                                || game->players[i].chips == 0;
         game->players[i].bet = 0;
         game->players[i].allin = 0;
     }
