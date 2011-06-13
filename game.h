@@ -11,7 +11,8 @@ typedef struct game *game_tp;
 
 typedef struct pot {
     int content;
-    player_t *players;
+    int bet;
+    player_t **players;
     int n_players;
 } pot_t;
 

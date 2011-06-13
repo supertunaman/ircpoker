@@ -38,8 +38,11 @@ new_game (int n_players)
     g->n_players = n_players;
     g->pots = calloc(1, sizeof (pot_t));
     g->n_pots = 1;
-    g->pots[0].players = g->players;
-    g->pots[0].n_players = g->n_players;
+    /* players are added to the pot by betting. */
+    g->pots[0].players = NULL;
+    g->pots[0].n_players = 0;
+    g->pots[0].content = 0;
+    g->pots[0].bet = 0;
 
     /* defaults */
     g->small_blind = 1;
@@ -60,8 +63,7 @@ void free_game (game_tp g)
 {
     int i;
     for (i=0; i<g->n_pots; ++i)
-        if (g->pots[i].players != g->players)
-            free(g->pots[i].players);
+        free(g->pots[i].players);
     free(g->pots);
     free(g->players);
     free(g);

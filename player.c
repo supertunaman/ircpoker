@@ -8,11 +8,71 @@ void bet(game_tp g, int player_id, int amount)
 {
     /* sets player's bet to amount */
     /* TODO: implement pots, and handle that here as well */
-    if (amount >= g->players[player_id].chips) {
+    int old_bet = g->players[player_id].bet;
+    int raise = amount - old_bet;
+    int D, i, j;
+
+    if (raise >= g->players[player_id].chips) {
         g->players[player_id].allin = 1;
-        g->players[player_id].bet = g->players[player_id].chips;
+        g->players[player_id].bet += g->players[player_id].chips;
+        raise = g->players[player_id].bet- old_bet;
+        g->players[player_id].chips = 0;
     } else {
-        g->players[player_id].bet = amount;
+        g->players[player_id].bet += raise;
+        g->players[player_id].chips -= raise;
+    }
+
+    for (i = 0; i < g->n_pots; ++i) {
+        int hasme = 0;
+        /* register interest in pot. */
+        for (j = 0; j < g->pots[i].n_players; ++j) {
+            if (g->pots[i].players[j] == &g->players[player_id]) {
+                hasme = 1;
+                break;
+            }
+        }
+        if (!hasme) {
+            g->pots[i].players = realloc(g->pots[i].players, ++g->pots[i].n_players);
+            g->pots[i].players[g->pots[i].n_players-1] = & g->players[player_id];
+        }
+        /* do the math. */
+        if ((D = (g->pots[i].bet - old_bet)) > 0) {
+            /* match the bet, if possible. */
+            if (D <= raise) {
+                g->pots[i].content += D;
+                raise -= D;
+                old_bet = g->pots[i].bet;
+            } else {
+                /* new side pot. */
+                pot_t sidepot;
+                sidepot.content = 0;
+                sidepot.bet = g->pots[i].bet;
+                sidepot.players = NULL;
+                sidepot.n_players = 0;
+                g->pots[i].bet = g->players[player_id].bet;
+                int DD;
+                /* transfer higher bets */
+                for (j = 0; j < g->pots[i].n_players; ++j) {
+                    if ((DD = g->pots[i].players[j]->bet - g->pots[i].bet) > 0) {
+                        g->pots[i].content -= DD;
+                        sidepot.content += DD;
+                    }
+                }
+                /* move higher pots along and insert side pot into array. */
+                g->pots = realloc (g->pots, ++g->n_pots);
+                for (j = i; j < g->n_pots-1; ++j)
+                    g->pots[j+1] = g->pots[j];
+                g->pots[i+1] = sidepot;
+
+                /* all in. Ignore higher pots. */
+                break;
+            }
+        }
+        if (i == g->n_pots-1 && raise > 0) {
+            /* current pot, I can raise. */
+            g->pots[i].content += raise;
+            g->pots[i].bet = g->players[player_id].bet;
+        }
     }
 }
 

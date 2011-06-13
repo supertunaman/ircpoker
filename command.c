@@ -50,6 +50,15 @@ deal_round (irc_session_t *session,
         game->players[i].bet = 0;
         game->players[i].allin = 0;
     }
+    /* get rid of all pots. */
+    for (i=0; i<game->n_pots; ++i) {
+        free(game->pots[i].players);
+    }
+    game->n_pots = 1;
+    game->pots[0].players = NULL;
+    game->pots[0].n_players = 0;
+    game->pots[0].content = 0;
+    game->pots[0].bet = 0;
     shuffle_deck(game);
 
     int small = next_player(game, game->button);
