@@ -11,6 +11,7 @@ void bet(game_tp g, int player_id, int amount)
     int old_bet = g->players[player_id].bet;
     int raise = amount - old_bet;
     int D, i, j;
+    pot_t sidepot;
 
     if (raise >= g->players[player_id].chips) {
         g->players[player_id].allin = 1;
@@ -32,7 +33,7 @@ void bet(game_tp g, int player_id, int amount)
             }
         }
         if (!hasme) {
-            g->pots[i].players = realloc(g->pots[i].players, ++g->pots[i].n_players);
+            g->pots[i].players = realloc(g->pots[i].players, ++(g->pots[i].n_players));
             g->pots[i].players[g->pots[i].n_players-1] = & g->players[player_id];
         }
         /* do the math. */
@@ -44,7 +45,6 @@ void bet(game_tp g, int player_id, int amount)
                 old_bet = g->pots[i].bet;
             } else {
                 /* new side pot. */
-                pot_t sidepot;
                 sidepot.content = 0;
                 sidepot.bet = g->pots[i].bet;
                 sidepot.players = NULL;
@@ -59,7 +59,7 @@ void bet(game_tp g, int player_id, int amount)
                     }
                 }
                 /* move higher pots along and insert side pot into array. */
-                g->pots = realloc (g->pots, ++g->n_pots);
+                g->pots = realloc (g->pots, ++(g->n_pots));
                 for (j = i; j < g->n_pots-1; ++j)
                     g->pots[j+1] = g->pots[j];
                 g->pots[i+1] = sidepot;
@@ -71,7 +71,18 @@ void bet(game_tp g, int player_id, int amount)
         if (i == g->n_pots-1 && raise > 0) {
             /* current pot, I can raise. */
             g->pots[i].content += raise;
-            g->pots[i].bet = g->players[player_id].bet;
+            raise = 0;
+            old_bet = g->pots[i].bet = g->players[player_id].bet;
+            if (g->players[player_id].allin) {
+                /* new, empty, side-pot */
+                sidepot.content = 0;
+                sidepot.bet = g->pots[i].bet;
+                sidepot.players = NULL;
+                sidepot.n_players = 0;
+                g->pots = realloc (g->pots, ++(g->n_pots));
+                g->pots[g->n_pots-1] = sidepot;
+                break; 
+            }
         }
     }
 }
