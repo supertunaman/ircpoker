@@ -6,6 +6,14 @@
 
 #include "irc.h"
 
+#ifndef USE_COLOR
+#define USE_COLOR 1
+#endif
+
+#ifndef USE_UTF8
+#define USE_UTF8 1
+#endif
+
 char *first_word (const char *txt);
 
 void process_cmd (irc_session_t *session, const char *from,
