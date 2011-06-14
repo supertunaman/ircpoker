@@ -33,7 +33,8 @@ void bet(game_tp g, int player_id, int amount)
             }
         }
         if (!hasme) {
-            g->pots[i].players = realloc(g->pots[i].players, ++(g->pots[i].n_players));
+            g->pots[i].players = realloc(g->pots[i].players,
+                                         ++(g->pots[i].n_players) * sizeof(player_t*));
             g->pots[i].players[g->pots[i].n_players-1] = & g->players[player_id];
         }
         /* do the math. */
@@ -59,7 +60,7 @@ void bet(game_tp g, int player_id, int amount)
                     }
                 }
                 /* move higher pots along and insert side pot into array. */
-                g->pots = realloc (g->pots, ++(g->n_pots));
+                g->pots = realloc (g->pots, ++(g->n_pots) * sizeof(pot_t));
                 for (j = i; j < g->n_pots-1; ++j)
                     g->pots[j+1] = g->pots[j];
                 g->pots[i+1] = sidepot;
@@ -79,7 +80,7 @@ void bet(game_tp g, int player_id, int amount)
                 sidepot.bet = g->pots[i].bet;
                 sidepot.players = NULL;
                 sidepot.n_players = 0;
-                g->pots = realloc (g->pots, ++(g->n_pots));
+                g->pots = realloc (g->pots, ++(g->n_pots) * sizeof(pot_t));
                 g->pots[g->n_pots-1] = sidepot;
                 break; 
             }
