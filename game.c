@@ -77,7 +77,7 @@ next_player (game_tp g, int playeridx)
         res++;
         if (res >= g->n_players) res = 0;
         if (res == playeridx) return -1;
-    } while (!g->players[res].folded);
+    } while (g->players[res].folded);
     return res;
 }
 

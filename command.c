@@ -170,6 +170,11 @@ process_cmd (irc_session_t *session,
             int val, i;
             if (strcmp(from_nick, game->house->nick) != 0) {
                 irc_cmd_msg(session, channel, "Only The House may change the rules.");
+                return;
+            }
+            if (!rest) {
+                irc_cmd_msg(session, channel, "Usage: set [base stock|small blind|big blind] [|=|to] {value}");
+                return;
             }
             if        (   sscanf(rest, "base stock %d", &val) > 0
                        || sscanf(rest, "base stock = %d", &val) > 0
