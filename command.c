@@ -597,7 +597,8 @@ process_bet_cmd (irc_session_t *session,
         }
     } else if (strcasecmp(cmd, "all in") == 0) {
         if (game->turn != player_id) goto wrong_player;
-        bet(game, player_id, game->players[player_id].chips);
+        bet(game, player_id, game->players[player_id].chips
+                           + game->players[player_id].bet);
         if (game->players[player_id].allin) {
             if (asprintf(&resp, "%s goes all in.",
                              game->players[player_id].nick) != -1) {
