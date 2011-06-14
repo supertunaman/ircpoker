@@ -171,7 +171,7 @@ on_invite (irc_session_t *session, const char *event,
 void
 on_generic (irc_session_t *session, const char *event, const char *origin, const char **params, unsigned count)
 {
-    int i;
+    unsigned i;
 
     printf("-- [%s] -- (%s) -- ", event, origin);
     for (i=0; i<count; ++i)
@@ -182,7 +182,7 @@ on_generic (irc_session_t *session, const char *event, const char *origin, const
 void
 on_numeric (irc_session_t *session, unsigned event, const char *origin, const char **params, unsigned count)
 {
-    int i;
+    unsigned i;
 
     printf("-- [%d] -- (%s) -- ", event, origin);
     for (i=0; i<count; ++i)

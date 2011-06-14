@@ -18,7 +18,7 @@ testhand: $(testhand_objects)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $(testhand_objects)
 
 clean:
-	rm -f *.o testdeck testhand
+	rm -f *.o testdeck testhand ircpoker
 
 test: testdeck testhand
 	./testdeck && echo ..... OK. || echo ..... FAIL!
@@ -27,5 +27,5 @@ test: testdeck testhand
 all: ircpoker testdeck testhand
 
 
-.PHONY: clean test
+.PHONY: clean test all
 
