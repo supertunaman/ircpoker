@@ -3,7 +3,9 @@
 
 #include "command.h"
 
-#include <libircclient/libircclient.h>
+#include <libircclient.h>
+#include <libirc_rfcnumeric.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
