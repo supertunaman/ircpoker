@@ -4,7 +4,8 @@
 #ifndef IRC_H
 #define IRC_H
 
-#include <libircclient/libircclient.h>
+#include <libircclient.h>
+#include <libirc_rfcnumeric.h>
 
 #include "game.h"
 
